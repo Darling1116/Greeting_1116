@@ -1,9 +1,13 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 import torch.optim as optim
 
 from PyTorch_2.CIFAR10.CIFAR_10 import trainloader
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(device)
 
 # 定义一个卷积神经网络，并修改它为3通道的图片
 class Net(nn.Module):
@@ -26,6 +30,7 @@ class Net(nn.Module):
         return x
 
 net = Net()
+# net.to(device)  将它们的参数和缓冲器转换为CUDA张量
 
 # 定义一个损失函数和优化器:
 # 使用分类交叉熵Cross-Entropy作为损失函数
@@ -41,6 +46,9 @@ for epoch in range(2):  # loop over the dataset multiple times
     for i, data in enumerate(trainloader, 0):
         # get the inputs
         inputs, labels = data
+        # 在每一个步骤向GPU发送输入和目标
+        # inputs, labels = inputs.to(device), labels.to(device)
+
         # zero the parameter gradients
         optimizer.zero_grad()
 
